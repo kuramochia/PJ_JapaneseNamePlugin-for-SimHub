@@ -35,18 +35,26 @@
                     <styles:SHSubSection
                         Title="使い方">
                         <TextBlock>
-                            <Run>このプラグインは、4つのデータを追加して提供します。</Run>
+                            <Run>このプラグインは、下記のデータを追加して提供します。</Run>
                             <LineBreak/>
-                            <Run>各データは、ProjectJapan マップの場合(都市名が一致する場合)は日本語に変換して出力、それ以外のマップの場合は、標準の名前になります。</Run>
+                            <Run>　"PJ_JapaneseNamePlugin.Job.CitySource" : PJ Map では日本語の配送元都市名、それ以外は通常の配送元都市名</Run>
+                            <LineBreak/>
+                            <Run>　"PJ_JapaneseNamePlugin.Job.CityDestination" : PJ Map では日本語の配送先都市名、それ以外は通常の配送先都市名</Run>
+                            <LineBreak/>
+                            <Run>　"PJ_JapaneseNamePlugin.Job.CitySource.NoCompletion" : PJ Map では日本語の配送元都市名、それ以外は string.Empty</Run>
+                            <LineBreak/>
+                            <Run>　"PJ_JapaneseNamePlugin.Job.CityDestination.NoCompletion" : PJ Map では日本語の配送先都市名、それ以外は string.Empty</Run>
+                            <LineBreak/>
+                            <Run>　"PJ_JapaneseNamePlugin.Job.CompanySource" : PJ Map では日本語の配送元企業名、それ以外は通常の配送元企業名</Run>
+                            <LineBreak/>
+                            <Run>　"PJ_JapaneseNamePlugin.Job.CompanyDestination" : PJ Map では日本語の配送先企業名、それ以外は通常の配送先企業名</Run>
                             <LineBreak/>
                             <LineBreak/>
-                            <Run>　"PJ_JapaneseNamePlugin.Job.CitySource" : 日本語の配送元都市名</Run>
+                            <Run Foreground="Red">試験的実装</Run>
                             <LineBreak/>
-                            <Run>　"PJ_JapaneseNamePlugin.Job.CityDestination" : 日本語の配送先都市名</Run>
+                            <Run>　"PJ_JapaneseNamePlugin.Job.Ja.CitySource" : Translate API で日本語に翻訳された配送元都市名</Run>
                             <LineBreak/>
-                            <Run>　"PJ_JapaneseNamePlugin.Job.CompanySource" : 日本語の配送元企業名</Run>
-                            <LineBreak/>
-                            <Run>　"PJ_JapaneseNamePlugin.Job.CompanyDestination" : 日本語の配送先企業名</Run>
+                            <Run>　"PJ_JapaneseNamePlugin.Job.Ja.CityDestination" : Translate API で日本語に翻訳された配送先都市名</Run>
                             <LineBreak/>
                             <LineBreak/>
                             <Run>起動時に JSON データをダウンロードして、日本語への変換情報を取得します。</Run>
