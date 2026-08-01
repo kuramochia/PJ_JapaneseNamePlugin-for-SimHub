@@ -11,6 +11,7 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
     public class PJ_JapaneseNamePlugin : IPlugin, IDataPlugin, IWPFSettingsV2
     {
         public PJ_JapaneseNamePluginSettings Settings;
+        public JapaneseTranslatedSettings TranslatedSettings;
         public CancellationTokenSource EndTokenSource = new CancellationTokenSource();
 
         public PJLocalization Localization { get; private set; }
@@ -40,6 +41,7 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
             EndTokenSource.Cancel();
             EndTokenSource.Dispose();
             this.SaveCommonSettings("Settings", Settings);
+            this.SaveCommonSettings("TranslatedSettings", TranslatedSettings);
         }
 
         /// <summary>
@@ -59,6 +61,7 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
         {
             // Load settings
             Settings = this.ReadCommonSettings<PJ_JapaneseNamePluginSettings>("Settings", () => new PJ_JapaneseNamePluginSettings());
+            TranslatedSettings = this.ReadCommonSettings<JapaneseTranslatedSettings>("TranslatedSettings", () => new JapaneseTranslatedSettings());
 
             Localization = new PJLocalization(this);
             var task = Localization.InitAsync(EndTokenSource.Token);
