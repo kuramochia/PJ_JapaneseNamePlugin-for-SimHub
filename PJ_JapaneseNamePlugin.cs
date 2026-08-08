@@ -15,6 +15,7 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
         public CancellationTokenSource EndTokenSource = new CancellationTokenSource();
 
         public PJLocalization Localization { get; private set; }
+        public CitiesJapaneseLocalization CitiesLocalization { get; private set; }
         /// <summary>
         /// Instance of the current plugin manager
         /// </summary>
@@ -64,15 +65,24 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
             TranslatedSettings = this.ReadCommonSettings<JapaneseTranslatedSettings>("TranslatedSettings", () => new JapaneseTranslatedSettings());
 
             Localization = new PJLocalization(this);
-            var task = Localization.InitAsync(EndTokenSource.Token);
+            Localization.InitAsync(EndTokenSource.Token).ConfigureAwait(false);
+            CitiesLocalization = new CitiesJapaneseLocalization(this);
+            CitiesLocalization.InitAsync(EndTokenSource.Token).ConfigureAwait(false);
         }
 
         void IDataPlugin.DataUpdate(PluginManager pluginManager, ref GameData data)
         {
-            if (data.OldData != null && data.GameName == "ETS2")
+            // Update Data
+            if (data.OldData != null)
             {
-                // Update Data
-                Localization.DataUpdate();
+                if (data.GameName == "ETS2")
+                {
+                    Localization.DataUpdate();
+                }
+                if (data.GameName == "ETS2" || data.GameName == "ATS")
+                {
+                    CitiesLocalization.DataUpdate();
+                }
             }
         }
     }
