@@ -111,6 +111,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CitiesJapaneseLocalization.cs" />
+    <Compile Include="IPluginAction.cs" />
     <Compile Include="PJLocalization.cs" />
     <Compile Include="PJ_JapaneseNamePlugin.cs" />
     <Compile Include="PJ_JapaneseNamePluginSettings.cs" />
