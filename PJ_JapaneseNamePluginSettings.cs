@@ -8,7 +8,20 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
     /// </summary>
     public class PJ_JapaneseNamePluginSettings
     {
-        public string JsonUrl { get; set; } = "https://gist.githubusercontent.com/kuramochia/0ccf486b022a9983c79c5c263646c7c9/raw/c91ed83af694fdac03f6b12be58c50992063deee/PJ_JapaneseNamePluginData.json";
+        private string _jsonUrl = "https://gist.githubusercontent.com/kuramochia/0ccf486b022a9983c79c5c263646c7c9/raw/PJ_JapaneseNamePluginData.json";
+        public string JsonUrl
+        {
+            get
+            {
+                // URL fix for old version of the plugin, to avoid breaking existing users
+                if (_jsonUrl == "https://gist.githubusercontent.com/kuramochia/0ccf486b022a9983c79c5c263646c7c9/raw/c91ed83af694fdac03f6b12be58c50992063deee/PJ_JapaneseNamePluginData.json")
+                {
+                    _jsonUrl = "https://gist.githubusercontent.com/kuramochia/0ccf486b022a9983c79c5c263646c7c9/raw/PJ_JapaneseNamePluginData.json";
+                }
+                return _jsonUrl;
+            }
+            set { _jsonUrl = value; }
+        }
         public string Etag { get; set; } = string.Empty;
         public DateTime LastUpdate { get; set; } = DateTime.MinValue;
 
