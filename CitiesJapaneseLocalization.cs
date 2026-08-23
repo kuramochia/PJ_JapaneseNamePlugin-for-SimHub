@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Navigation;
 
 namespace Kuramochia.PJ_JapaneseNamePlugin
 {
@@ -22,6 +19,8 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
         public CitiesJapaneseLocalization(PJ_JapaneseNamePlugin plugin)
         {
             _plugin = plugin;
+            _httpclient.DefaultRequestHeaders.UserAgent.Clear();
+            _httpclient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0");
         }
 
         public async Task InitAsync(CancellationToken cancellationToken)
@@ -34,6 +33,8 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
 
         public Task UpdateAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
 
+        private Dictionary<string, Task<TranslationResult>> _translationTasks = new Dictionary<string, Task<TranslationResult>>();
+
         public void DataUpdate()
         {
             if (_plugin.PluginManager.GameName == "ETS2" || _plugin.PluginManager.GameName == "ATS")
@@ -42,28 +43,92 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
                 string defaultCitySourceName = _plugin.PluginManager.GetPropertyValue("GameRawData.JobValues.CitySource")?.ToString();
                 string defaultCityDestinationName = _plugin.PluginManager.GetPropertyValue("GameRawData.JobValues.CityDestination")?.ToString();
 
-                // 都市名の翻訳タスク
-                var translatedCitySourceTask = TryGetTranslatedCityNameAsync(defaultCitySourceName);
-                var translatedCityDestinationTask = TryGetTranslatedCityNameAsync(defaultCityDestinationName);
+                // source の都市名処理
+                if (string.IsNullOrEmpty(defaultCitySourceName))
+                {
+                    // 標準の都市名が null の場合は、翻訳処理を行わないで、そのまま返却する
+                    _plugin.PluginManager.SetPropertyValue(JobJapaneseCitySourcePropertyName, _plugin.GetType(), defaultCitySourceName);
+                }
+                else if (_plugin.TranslatedSettings.TranslatedCities.TryGetValue(defaultCitySourceName, out var translated))
+                {
+                    // 標準の都市名が翻訳済みの場合は、翻訳結果を設定する
+                    _plugin.PluginManager.SetPropertyValue(JobJapaneseCitySourcePropertyName, _plugin.GetType(), translated);
+                }
+                else if (_translationTasks.TryGetValue(defaultCitySourceName, out var sourceTask))
+                {
+                    // 翻訳タスクが既に存在する場合
+                    if (sourceTask.IsCompleted)
+                    {
+                        // タスクが完了している場合は、翻訳結果を設定する
+                        _plugin.PluginManager.SetPropertyValue(JobJapaneseCitySourcePropertyName, _plugin.GetType(), sourceTask.Result.Name);
+                        // 翻訳失敗した場合は、オンメモリでタスクが残り続けるので、翻訳結果が見つかった場合のみタスクを削除する
+                        if (sourceTask.Result.Found)
+                        {
+                            // 翻訳結果が見つかった場合は、タスクを削除する
+                            _translationTasks.Remove(defaultCitySourceName);
+                        }
+                    }
+                    else
+                    {
+                        // タスクが完了していない場合は、元の都市名を設定する
+                        _plugin.PluginManager.SetPropertyValue(JobJapaneseCitySourcePropertyName, _plugin.GetType(), defaultCitySourceName);
+                    }
+                }
+                else
+                {
+                    var newSourceTask = TryGetTranslatedCityNameAsync(defaultCitySourceName);
+                    _translationTasks[defaultCitySourceName] = newSourceTask;
+                    // すぐに翻訳結果が得られないため、元の都市名を設定
+                    _plugin.PluginManager.SetPropertyValue(JobJapaneseCitySourcePropertyName, _plugin.GetType(), defaultCitySourceName);
+                }
 
-                // 翻訳された都市名を設定
-                _plugin.PluginManager.SetPropertyValue(JobJapaneseCitySourcePropertyName, _plugin.GetType(), translatedCitySourceTask.Result.translatedCityName);
-                _plugin.PluginManager.SetPropertyValue(JobJapaneseCityDestinationPropertyName, _plugin.GetType(), translatedCityDestinationTask.Result.translatedCityName);
-            }
+                // destination の都市名処理
+                if (string.IsNullOrEmpty(defaultCityDestinationName))
+                {
+                    // 標準の都市名が null の場合は、翻訳処理を行わないで、そのまま返却する
+                    _plugin.PluginManager.SetPropertyValue(JobJapaneseCityDestinationPropertyName, _plugin.GetType(), defaultCityDestinationName);
+                }
+                else if (_plugin.TranslatedSettings.TranslatedCities.TryGetValue(defaultCityDestinationName, out var translatedDest))
+                {
+                    // 標準の都市名が翻訳済みの場合は、翻訳結果を設定する
+                    _plugin.PluginManager.SetPropertyValue(JobJapaneseCityDestinationPropertyName, _plugin.GetType(), translatedDest);
+                }
+                else if (_translationTasks.TryGetValue(defaultCityDestinationName, out var destTask))
+                {
+                    // 翻訳タスクが既に存在する場合
+                    if (destTask.IsCompleted)
+                    {
+                        // タスクが完了している場合は、翻訳結果を設定する
+                        _plugin.PluginManager.SetPropertyValue(JobJapaneseCityDestinationPropertyName, _plugin.GetType(), destTask.Result.Name);
+                        // 翻訳失敗した場合は、オンメモリでタスクが残り続けるので、翻訳結果が見つかった場合のみタスクを削除する
+                        if (destTask.Result.Found)
+                        {
+                            // 翻訳結果が見つかった場合は、タスクを削除する
+                            _translationTasks.Remove(defaultCityDestinationName);
+                        }
+                    }
+                    else
+                    {
+                        // タスクが完了していない場合は、元の都市名を設定する
+                        _plugin.PluginManager.SetPropertyValue(JobJapaneseCityDestinationPropertyName, _plugin.GetType(), defaultCityDestinationName);
+                    }
+                }
+                else
+                {
+                    var newDestTask = TryGetTranslatedCityNameAsync(defaultCityDestinationName);
+                    _translationTasks[defaultCityDestinationName] = newDestTask;
+                    // すぐに翻訳結果が得られないため、元の都市名を設定
+                    _plugin.PluginManager.SetPropertyValue(JobJapaneseCityDestinationPropertyName, _plugin.GetType(), defaultCityDestinationName);
+                }
+            } 
         }
 
-
-        private async Task<(bool found, string translatedCityName)> TryGetTranslatedCityNameAsync(string cityName)
+        private async Task<TranslationResult> TryGetTranslatedCityNameAsync(string cityName)
         {
             if (string.IsNullOrEmpty(cityName))
             {
-                return (false, string.Empty);
+                return new TranslationResult { Found = false, Name = string.Empty };
             }
-            if (_plugin.TranslatedSettings.TranslatedCities.TryGetValue(cityName, out var translated))
-            {
-                return (true, translated);
-            }
-
             try
             {
                 // Google Translate の非公開 API を使用して都市名を日本語に翻訳する
@@ -72,7 +137,8 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
                 var response = await _httpclient.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {
-                    return (false, cityName);
+                    SimHub.Logging.Current.Error($"PJ_JapaneseNamePlugin Translate Error.{response.StatusCode}:{response.ReasonPhrase}");
+                    return new TranslationResult { Found = false, Name = cityName };
                 }
 
                 var body = await response.Content.ReadAsStringAsync();
@@ -90,7 +156,7 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
                     // 翻訳結果を設定として保存する
                     _plugin.TranslatedSettings.TranslatedCities[cityName] = translatedText;
                     SimHub.Logging.Current.Info($"PJ_JapaneseNamePlugin Translate City Added. {cityName} -> {translatedText}");
-                    return (true, translatedText);
+                    return new TranslationResult { Found = true, Name = translatedText };
                 }
             }
             catch (Exception ex)
@@ -98,8 +164,13 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
                 SimHub.Logging.Current.Error("PJ_JapaneseNamePlugin Translate Error.", ex);
             }
 
-            return (false, cityName);
+            return new TranslationResult { Found = false, Name = cityName };
         }
 
+        private struct TranslationResult
+        {
+            public bool Found { get; set; }
+            public string Name { get; set; }
+        }
     }
 }

@@ -57,7 +57,7 @@ var city = $prop('PJ_JapaneseNamePlugin.Job.CitySource.NoCompletion')
 if (city === '')
 {
 	var citySource = $prop('GameRawData.JobValues.CitySource');
-	if(citySource === '') return '';
+	if(citySource === null || citySource === '') return '';
 	city = $prop('PJ_JapaneseNamePlugin.Job.Ja.CitySource') + ' (' + citySource + ')';
 }
 return city;
