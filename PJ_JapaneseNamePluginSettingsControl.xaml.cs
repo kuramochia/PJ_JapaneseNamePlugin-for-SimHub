@@ -19,12 +19,13 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
         {
             this.Plugin = plugin;
             jsonUrlTextBox.Text = Plugin.Settings.JsonUrl;
+            enablePluginToggleButton.IsChecked = Plugin.Settings.IsExperimentalEnabled;
             Update_lastUpdatedTextBlock();
         }
 
         private async void updateButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            await Plugin.Localization.UpdateAsync(true);
+            await Plugin.Localization.UpdateAsync(forceUpdate: true);
             Update_lastUpdatedTextBlock();
         }
 
@@ -43,6 +44,18 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
             {
                 lastUpdatedTextBlock.Text = $"最終更新: {Plugin.Settings.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss")}";
             }
+        }
+
+        private void enablePluginToggleButton_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Plugin.Settings.IsExperimentalEnabled = true;
+            Plugin.Save();
+        }
+
+        private void enablePluginToggleButton_Unchecked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Plugin.Settings.IsExperimentalEnabled = false;
+            Plugin.Save();
         }
     }
 }

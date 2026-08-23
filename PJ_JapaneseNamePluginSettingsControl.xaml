@@ -62,6 +62,12 @@
                             <Run>「強制更新」ボタンをクリックすると、手動で JSON データを再ダウンロードできます。</Run>
                         </TextBlock>
                     </styles:SHSubSection>
+                    <styles:SHToggleCheckbox
+                        x:Name="enablePluginToggleButton"
+                        Margin="10,5"
+                        Checked="enablePluginToggleButton_Checked" Unchecked="enablePluginToggleButton_Unchecked">
+                            <TextBlock Text="試験的実装を有効にする" Foreground="Red" FontStretch="Medium"/>
+                    </styles:SHToggleCheckbox>
                 </StackPanel>
             </styles:SHSection>
         </Grid>

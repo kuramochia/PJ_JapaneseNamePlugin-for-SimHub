@@ -25,7 +25,6 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
 
         public async Task InitAsync(CancellationToken cancellationToken)
         {
-
             _plugin.PluginManager.AddProperty(JobJapaneseCitySourcePropertyName, _plugin.GetType(), "", "日本語に翻訳された配送元都市名");
             _plugin.PluginManager.AddProperty(JobJapaneseCityDestinationPropertyName, _plugin.GetType(), "", "日本語に翻訳された配送先都市名");
             await UpdateAsync(cancellationToken);
@@ -37,7 +36,7 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
 
         public void DataUpdate()
         {
-            if (_plugin.PluginManager.GameName == "ETS2" || _plugin.PluginManager.GameName == "ATS")
+            if (_plugin.Settings.IsExperimentalEnabled && (_plugin.PluginManager.GameName == "ETS2" || _plugin.PluginManager.GameName == "ATS"))
             {
                 // 標準の都市名
                 string defaultCitySourceName = _plugin.PluginManager.GetPropertyValue("GameRawData.JobValues.CitySource")?.ToString();

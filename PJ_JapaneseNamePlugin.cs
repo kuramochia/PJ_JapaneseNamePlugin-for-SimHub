@@ -41,6 +41,11 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
         {
             EndTokenSource.Cancel();
             EndTokenSource.Dispose();
+            Save();
+        }
+
+        public void Save()
+        {
             this.SaveCommonSettings("Settings", Settings);
             this.SaveCommonSettings("TranslatedSettings", TranslatedSettings);
         }
@@ -79,7 +84,7 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
                 {
                     Localization.DataUpdate();
                 }
-                if (data.GameName == "ETS2" || data.GameName == "ATS")
+                if (Settings.IsExperimentalEnabled && (data.GameName == "ETS2" || data.GameName == "ATS"))
                 {
                     CitiesLocalization.DataUpdate();
                 }
