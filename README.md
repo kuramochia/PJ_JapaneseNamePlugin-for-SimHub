@@ -41,14 +41,12 @@ ProjectJapan で addon_jp_company を入れたときに、Simhub で表示する
 
 
 ### 使用例
-#### 配送元都市名の使用例
+#### 配送元会社名の使用例 (未対応の場合の SourceId 表示)
 ```javascript
-var city = $prop('PJ_JapaneseNamePlugin.Job.CitySource.NoCompletion')
-if (city === '')
+var company = $prop('PJ_JapaneseNamePlugin.Job.CompanySource')
+if (company === '' || company === null)
 {
-	var citySource = $prop('GameRawData.JobValues.CitySource');
-	if(citySource === null || citySource === '') return '';
-	city = $prop('PJ_JapaneseNamePlugin.Job.Ja.CitySource') + ' (' + citySource + ')';
+	return '';
 }
-return city;
+return company + ' [' + $prop('GameRawData.JobValues.CompanySourceId') + ']';
 ```
