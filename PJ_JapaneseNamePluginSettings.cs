@@ -28,11 +28,5 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
         public Dictionary<string, string> Cities { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Companies { get; set; } = new Dictionary<string, string>();
 
-        public bool IsExperimentalEnabled { get; set; } = false;
-    }
-
-    public class JapaneseTranslatedSettings
-    {
-        public Dictionary<string, string> TranslatedCities { get; set; } = new Dictionary<string, string>();
     }
 }

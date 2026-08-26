@@ -50,24 +50,11 @@
                             <Run>　"PJ_JapaneseNamePlugin.Job.CompanyDestination" : PJ Map では日本語の配送先企業名、それ以外は通常の配送先企業名</Run>
                             <LineBreak/>
                             <LineBreak/>
-                            <Run Foreground="Red">試験的実装</Run>
-                            <LineBreak/>
-                            <Run>　"PJ_JapaneseNamePlugin.Job.Ja.CitySource" : Translate API で日本語に翻訳された配送元都市名</Run>
-                            <LineBreak/>
-                            <Run>　"PJ_JapaneseNamePlugin.Job.Ja.CityDestination" : Translate API で日本語に翻訳された配送先都市名</Run>
-                            <LineBreak/>
-                            <LineBreak/>
                             <Run>起動時に JSON データをダウンロードして、日本語への変換情報を取得します。</Run>
                             <LineBreak/>
                             <Run>「強制更新」ボタンをクリックすると、手動で JSON データを再ダウンロードできます。</Run>
                         </TextBlock>
                     </styles:SHSubSection>
-                    <styles:SHToggleCheckbox
-                        x:Name="enablePluginToggleButton"
-                        Margin="10,5"
-                        Checked="enablePluginToggleButton_Checked" Unchecked="enablePluginToggleButton_Unchecked">
-                            <TextBlock Text="試験的実装を有効にする" Foreground="Red" FontStretch="Medium"/>
-                    </styles:SHToggleCheckbox>
                 </StackPanel>
             </styles:SHSection>
         </Grid>
