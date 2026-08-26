@@ -40,16 +40,6 @@ ProjectJapan で addon_jp_company を入れたときに、Simhub で表示する
 都市名は `GameRawData.JobValues.CitySourceId` または `GameRawData.JobValues.CityDestinationId`を、企業名は `GameRawData.JobValues.CompanySourceId` または `GameRawData.JobValues.CompanyDestinationId` を添えて教えてください。
 
 
-## 試験的実装
-下記のデータ（プロパティ）は試験的実装です。
-+ Google の非公開 Translate API を利用して都市名を日本語に翻訳します。
-+ バニラ、ProMods 等のマップの都市名が、いろんな言語で出てきて読めないので作りました。
-
-| プロパティ名 | 用途 | 取得に失敗した場合の返却値| 補足 |
-| :--- | :--- | :--- | :--- |
-| `PJ_JapaneseNamePlugin.Job.Ja.CitySource`  | 日本語の配送元都市名  | `GameRawData.JobValues.CitySource` | Google Translate API で日本語に翻訳された配送元都市名 |
-| `PJ_JapaneseNamePlugin.Job.Ja.CityDestination`  | 日本語の配送先都市名| `GameRawData.JobValues.CityDestination` | Google Translate API で日本語に翻訳された配送先都市名 |
-
 ### 使用例
 #### 配送元都市名の使用例
 ```javascript
