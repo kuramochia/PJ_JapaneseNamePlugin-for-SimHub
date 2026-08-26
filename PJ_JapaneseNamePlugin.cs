@@ -11,11 +11,10 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
     public class PJ_JapaneseNamePlugin : IPlugin, IDataPlugin, IWPFSettingsV2
     {
         public PJ_JapaneseNamePluginSettings Settings;
-        public JapaneseTranslatedSettings TranslatedSettings;
         public CancellationTokenSource EndTokenSource = new CancellationTokenSource();
 
         public PJLocalization Localization { get; private set; }
-        public CitiesJapaneseLocalization CitiesLocalization { get; private set; }
+
         /// <summary>
         /// Instance of the current plugin manager
         /// </summary>
@@ -47,7 +46,6 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
         public void Save()
         {
             this.SaveCommonSettings("Settings", Settings);
-            this.SaveCommonSettings("TranslatedSettings", TranslatedSettings);
         }
 
         /// <summary>
@@ -67,12 +65,9 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
         {
             // Load settings
             Settings = this.ReadCommonSettings<PJ_JapaneseNamePluginSettings>("Settings", () => new PJ_JapaneseNamePluginSettings());
-            TranslatedSettings = this.ReadCommonSettings<JapaneseTranslatedSettings>("TranslatedSettings", () => new JapaneseTranslatedSettings());
 
             Localization = new PJLocalization(this);
             Localization.InitAsync(EndTokenSource.Token).ConfigureAwait(false);
-            CitiesLocalization = new CitiesJapaneseLocalization(this);
-            CitiesLocalization.InitAsync(EndTokenSource.Token).ConfigureAwait(false);
         }
 
         void IDataPlugin.DataUpdate(PluginManager pluginManager, ref GameData data)
@@ -83,10 +78,6 @@ namespace Kuramochia.PJ_JapaneseNamePlugin
                 if (data.GameName == "ETS2")
                 {
                     Localization.DataUpdate();
-                }
-                if (Settings.IsExperimentalEnabled && (data.GameName == "ETS2" || data.GameName == "ATS"))
-                {
-                    CitiesLocalization.DataUpdate();
                 }
             }
         }
